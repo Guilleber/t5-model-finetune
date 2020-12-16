@@ -1,0 +1,36 @@
+
+*** These modified files were found in JOE when it aborted on Tue Dec 15 17:11:46 2020
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+/home/gleberre/.gitconfig
+
+*** File '/home/gleberre/.gitconfig'
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+#	name = Guilleber
+#	email = guil
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
+
+*** These modified files were found in JOE when it aborted on Tue Dec 15 17:17:12 2020
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+/home/gleberre/.gitconfig
+
+*** File '/home/gleberre/.gitconfig'
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+name = Guillaume Le Berre
+email = guillaume.le_berre@depinfonancy.net
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc

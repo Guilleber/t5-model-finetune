@@ -10,6 +10,7 @@ import pytorch_lightning as pl
 
 
 MAX_LEN = 50
+NUM_CH = 4
 label_map = {"A": 0, "B": 1, "C": 2, "D": 3}
 
 
@@ -17,30 +18,76 @@ def obqa_preprocess(tokenizer, x: Dict) -> Dict:
     question = x["question_stem"]
     features = []
 
-    for choice in x["choices"]["text"]:
-        features.append(tokenizer(question, text_pair=choice, add_special_tokens=True, padding=True, truncation=True, max_length=MAX_LEN, return_tensors='pt'))
-    features = {key: torch.tensor([feat[key] for feat in features]) for key in features[0].keys()}
-    features["label"] = label_map[x["answerKey"]]
+    features = tokenizer([question for _ in range(NUM_CH)], text_pair=x["choices"]["text"], add_special_tokens=True, padding='max_length', truncation=True, max_length=MAX_LEN, return_tensors='pt')
+    features["label"] = torch.tensor(label_map[x["answerKey"]]).long()
     features["id"] = x["id"]
     return features
 
 
 class OBQADataModule(pl.LightningDataModule):
-    def __init__(self, batch_size: int, tokenizer) -> None:
+    def __init__(self, tokenizer, batch_size: int=32) -> None:
+        super().__init__()
         self.batch_size = batch_size
         self.tokenizer = tokenizer
-        self.preprocessor = partial(preprocess, tokenizer)
-        return
+        self.preprocessor = partial(obqa_preprocess, tokenizer)
+        self.columns = ['input_ids', 'attention_mask', 'label']
 
-    def prepare_data(self) -> None:
+    def prepare_data(self):
         self.obqa = load_dataset("openbookqa", "main")
-        return
+        self.obqa["train"] = self.obqa["train"].map(self.preprocessor)
+        self.obqa["validation"] = self.obqa["validation"].map(self.preprocessor)
+        self.obqa["test"] = self.obqa["test"].map(self.preprocessor)
 
-    def train_dataloader(self) -> DataLoader:
-        return DataLoader(self.obqa["train"].map(self.preprocessor), shuffle=True, batch_size=self.batch_size)
+        self.obqa["train"].set_format(type='torch', columns=columns)
+        self.obqa["validation"].set_format(type='torch', columns=columns)
+        self.obqa["test"].set_format(type='torch', columns=columns)
 
-    def val_dataloader(self) -> DataLoader:
-        return DataLoader(self.obqa["validation"].map(self.preprocessor), batch_size=self.batch_size)
+    def train_dataloader(self):
+        return DataLoader(self.obqa["train"], batch_size=self.batch_size)
 
-    def test_dataloader(self) -> DataLoader:
-        return DataLoader(self.obqa["test"].map(self.preprocessor), batch_size=self.batch_size)
+    def val_dataloader(self):
+        return DataLoader(self.obqa["validation"], batch_size=self.batch_size)
+
+    def test_dataloader(self):
+        return DataLoader(self.obqa["test"], batch_size=self.batch_size)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
