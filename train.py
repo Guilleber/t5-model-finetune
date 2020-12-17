@@ -1,5 +1,5 @@
 from model import MCQAModel
-from datasets.obqa_dataset import OBQADataModule
+from modules.obqa_dataset import OBQADataModule
 from settings import get_config_by_name
 
 import pytorch_lightning as pl
@@ -34,6 +34,7 @@ if __name__ == "__main__":
             verbose=True,
             mode='max'
             )
+
     tokenizer = AutoTokenizer.from_pretrained(hparams.pretrained_model_name)
     data_module = OBQADataModule(tokenizer, batch_size=hparams.batch_size)
 
@@ -44,7 +45,7 @@ if __name__ == "__main__":
 
     trainer = pl.Trainer(
             gpus=args.gpus,
-            early_stop_callback=early_stop,
+            callbacks=[early_stop],
             min_epochs=2,
             max_epochs=args.epochs
             )

@@ -18,8 +18,8 @@ def obqa_preprocess(tokenizer, x: Dict) -> Dict:
     question = x["question_stem"]
     features = []
 
-    features = tokenizer([question for _ in range(NUM_CH)], text_pair=x["choices"]["text"], add_special_tokens=True, padding='max_length', truncation=True, max_length=MAX_LEN, return_tensors='pt')
-    features["label"] = torch.tensor(label_map[x["answerKey"]]).long()
+    features = tokenizer([question for _ in range(NUM_CH)], text_pair=x["choices"]["text"], add_special_tokens=True, padding='max_length', truncation=True, max_length=MAX_LEN)
+    features["label"] = label_map[x["answerKey"]]
     features["id"] = x["id"]
     return features
 
@@ -34,13 +34,13 @@ class OBQADataModule(pl.LightningDataModule):
 
     def prepare_data(self):
         self.obqa = load_dataset("openbookqa", "main")
-        self.obqa["train"] = self.obqa["train"].map(self.preprocessor)
-        self.obqa["validation"] = self.obqa["validation"].map(self.preprocessor)
-        self.obqa["test"] = self.obqa["test"].map(self.preprocessor)
+        self.obqa["train"] = self.obqa["train"].map(self.preprocessor, batched=False)
+        self.obqa["validation"] = self.obqa["validation"].map(self.preprocessor, batched=False)
+        self.obqa["test"] = self.obqa["test"].map(self.preprocessor, batched=False)
 
-        self.obqa["train"].set_format(type='torch', columns=columns)
-        self.obqa["validation"].set_format(type='torch', columns=columns)
-        self.obqa["test"].set_format(type='torch', columns=columns)
+        self.obqa["train"].set_format(type='torch', columns=self.columns)
+        self.obqa["validation"].set_format(type='torch', columns=self.columns)
+        self.obqa["test"].set_format(type='torch', columns=self.columns)
 
     def train_dataloader(self):
         return DataLoader(self.obqa["train"], batch_size=self.batch_size)
