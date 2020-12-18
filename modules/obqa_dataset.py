@@ -2,6 +2,7 @@ from typing import Dict
 from functools import partial
 
 from datasets import load_dataset
+from transformers import AutoTokenizer
 
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -25,10 +26,10 @@ def preprocess(tokenizer, x: Dict) -> Dict:
 
 
 class OBQADataModule(pl.LightningDataModule):
-    def __init__(self, tokenizer, batch_size: int=32) -> None:
+    def __init__(self, model_name: str, batch_size: int=32) -> None:
         super().__init__()
         self.batch_size = batch_size
-        self.tokenizer = tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.preprocessor = partial(preprocess, tokenizer)
 
     def prepare_data(self):

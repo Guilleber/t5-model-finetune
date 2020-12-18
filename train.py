@@ -8,7 +8,6 @@ import torch
 import random
 
 from argparse import ArgumentParser
-from transformers import AutoTokenizer
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -35,8 +34,7 @@ if __name__ == "__main__":
             mode='max'
             )
 
-    tokenizer = AutoTokenizer.from_pretrained(hparams.pretrained_model_name)
-    data_module = OBQADataModule(tokenizer, batch_size=hparams.batch_size)
+    data_module = OBQADataModule(model_name=hparams.pretrained_model_name, batch_size=hparams.batch_size)
 
     if args.load_model is not None:
         model = MCQAModel.load_from_checkpoint(args.load_model, hparams)
@@ -49,6 +47,7 @@ if __name__ == "__main__":
             min_epochs=2,
             max_epochs=args.epochs
             )
+
     trainer.fit(model, data_module)
 
     if args.save_model is not None:

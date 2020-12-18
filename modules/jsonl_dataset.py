@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import Dataset
 
 import pytorch_lightning as pl
+from transformers import AutoTokenizer
 
 import jsonlines
 from typing import Dict
@@ -23,10 +24,10 @@ def preprocess(tokenizer, x: Dict) -> Dict:
 
 
 class JsonlDataModule(pl.LightningDataModule):
-    def __init__(self, tokenizer, train_path, val_path, test_path=None, batch_size: int=32) -> None:
+    def __init__(self, model_name: str, train_path: str, val_path: str, test_path: str=None, batch_size: int=32) -> None:
         super().__init__()
         self.batch_size = batch_size
-        self.tokenizer = tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.preprocessor = partial(preprocess, tokenizer)
         self.train_path = train_path
         self.val_path = val_path
