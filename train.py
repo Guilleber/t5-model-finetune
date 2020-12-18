@@ -39,7 +39,7 @@ if __name__ == "__main__":
     data_module = OBQADataModule(tokenizer, batch_size=hparams.batch_size)
 
     if args.load_model is not None:
-        model = MCQAModel.load_from_checkpoint(args.load_model)
+        model = MCQAModel.load_from_checkpoint(args.load_model, hparams)
     else:
         model = MCQAModel(hparams)
 

@@ -21,11 +21,14 @@ class MCQAModel(pl.LightningModule):
         self.dropout = nn.Dropout(self.model.config.hidden_dropout_prob)
 
     def forward(self, inputs):
-        for key in ["input_ids", "attention_mask"]:
+        for key in inputs["model_inputs"].keys():
+            """
             inputs[key] = torch.cat([el.unsqueeze(0) for el in inputs[key]], dim=0)
             inputs[key] = inputs[key].transpose(0, 1).contiguous().view(-1, inputs[key].size(-1))
+            """
+            inputs["model_inputs"][key] = inputs["model_inputs"][key].view(-1, inputs["model_inputs"][key].size(-1))
 
-        outputs = self.model(inputs["input_ids"], attention_mask=inputs["attention_mask"])[0]
+        outputs = self.model(**inputs["model_inputs"])[0]
         outputs = outputs[:,0,:]
         outputs = self.dropout(outputs)
         outputs = self.lin_out(outputs)
@@ -35,7 +38,7 @@ class MCQAModel(pl.LightningModule):
         return torch.mean((logits.argmax(dim=1) == labels).float())
 
     def configure_optimizers(self):
-        return AdamW(self.parameters(), lr=self.hpar.lr)
+        return AdamW(self.parameters(), lr=self.hpar.lr, betas=self.hpar.betas, weight_decay=self.hpar.weight_decay)
 
     def training_step(self, batch, batch_idx):
         logits = self(batch)
