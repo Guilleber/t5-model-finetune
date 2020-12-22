@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 
 from transformers import AutoTokenizer, AutoModel
-from transformers import AdamW
+from transformers import AdamW, get_constant_schedule_with_warmup
 
 
 class MCQAModel(pl.LightningModule):
@@ -34,17 +34,24 @@ class MCQAModel(pl.LightningModule):
         outputs = self.lin_out(outputs)
         return outputs.view(-1, 4)
 
+
     def compute_acc(self, logits, labels):
         return torch.mean((logits.argmax(dim=1) == labels).float())
 
+
+    def compute_loss(self, logits, labels, choices):
+        return F.cross_entropy(logits, labels)
+
+
     def configure_optimizers(self):
-        return AdamW(self.parameters(), lr=self.hpar.lr, betas=self.hpar.betas, weight_decay=self.hpar.weight_decay)
+        optimizer = AdamW(self.parameters(), lr=self.hpar.lr, betas=self.hpar.adam_betas, weight_decay=self.hpar.weight_decay)
+        return optimizer
 
     def training_step(self, batch, batch_idx):
         logits = self(batch)
         labels = batch["label"]
 
-        loss = F.cross_entropy(logits, labels)
+        loss = self.compute_loss(logits, labels)
         acc = self.compute_acc(logits, labels)
 
         self.log("train_loss", loss)
@@ -56,7 +63,7 @@ class MCQAModel(pl.LightningModule):
         logits = self(batch)
         labels = batch["label"]
 
-        loss = F.cross_entropy(logits, labels)
+        loss = self.compute_loss(logits, labels)
         acc = self.compute_acc(logits, labels)
 
         return {"val_loss": loss, "val_acc": acc}
@@ -76,7 +83,7 @@ class MCQAModel(pl.LightningModule):
         logits = self(batch)
         labels = batch["label"]
 
-        loss = F.cross_entropy(logits, labels)
+        loss = self.compute_loss(logits, labels)
         acc = self.compute_acc(logits, labels)
 
         return {"test_loss": loss, "test_acc": acc}
