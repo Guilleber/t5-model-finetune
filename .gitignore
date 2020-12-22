@@ -1,6 +1,10 @@
 *.pyc
 *.ckpt
+*.tsv
+*.txt
+*.jsonl
 data/
-models/
+stored_models/
+t5_eval_scripts/temp/
 lightning_logs/
 **/__pycache__/
