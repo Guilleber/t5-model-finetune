@@ -3,7 +3,7 @@ class Config():
         self.__dict__.update(entries)
 
 configs = {
-              "roberta-base-1": {
+              "roberta-base": {
                   "pretrained_model_type": "bert",
                   "pretrained_model_name": "roberta-base",
                   "lr": 1e-5,
@@ -11,7 +11,7 @@ configs = {
                   "adam_betas": (0.9, 0.98),
                   "weight_decay": 0.01
               },
-              "roberta-large-1": {
+              "roberta-large": {
                   "pretrained_model_type": "bert",
                   "pretrained_model_name": "roberta-large",
                   "lr": 1e-5,
@@ -23,19 +23,33 @@ configs = {
                   "pretrained_model_type": "t5",
                   "pretrained_model_name": "allenai/unifiedqa-t5-base",
                   "lr": 1e-3,
-                  "batch_size": 8,
+                  "batch_size": 4,
                   "max_len_in": 512,
-                  "max_len_out": 100,
-                  "optimizer_type": "AdaFactor"
+                  "max_len_out": 100
               },
               "unifiedqa-large": {
                   "pretrained_model_type": "t5",
                   "pretrained_model_name": "allenai/unifiedqa-t5-large",
                   "lr": 1e-3,
-                  "batch_size": 8,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
+              },
+              "t5-base": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "t5-base",
+                  "lr": 1e-3,
+                  "batch_size": 4,
                   "max_len_in": 512,
-                  "max_len_out": 100,
-                  "optimizer_type": "AdaFactor"
+                  "max_len_out": 100
+              },
+              "t5-large": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "t5-large",
+                  "lr": 1e-3,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
               }
           }
 
