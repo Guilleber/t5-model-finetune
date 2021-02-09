@@ -16,6 +16,7 @@ class T5Model(pl.LightningModule):
         self.hpar = args
         
         self.model = AutoModelForSeq2SeqLM.from_pretrained(self.hpar.pretrained_model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.hpar.pretrained_model_name)
         
 
     def forward(self, inputs):
@@ -26,12 +27,14 @@ class T5Model(pl.LightningModule):
 
 
     def trim_padding(self, inputs):
-        max_len_in = 0
+        max_len_in = -1
         for seq in inputs["input_seq"]["input_ids"]:
             for t in range(1, len(seq)):
                 if seq[t] == 0:
                     max_len_in = max(t, max_len_in)
                     break
+        if max_len_in == -1:
+            max_len_in = inputs["input_seq"]["input_ids"].size(1)
         inputs["input_seq"]["input_ids"] = inputs["input_seq"]["input_ids"][:,:max_len_in].contiguous()
         inputs["input_seq"]["attention_mask"] = inputs["input_seq"]["attention_mask"][:,:max_len_in].contiguous()
 
@@ -41,6 +44,8 @@ class T5Model(pl.LightningModule):
                 if seq[t] == 0:
                     max_len_out = max(t, max_len_out)
                     break
+        if max_len_out == -1:
+            max_len_out = inputs["output_seq"]["input_ids"].size(1)
         inputs["output_seq"]["input_ids"] = inputs["output_seq"]["input_ids"][:,:max_len_out].contiguous()
         inputs["output_seq"]["attention_mask"] = inputs["output_seq"]["attention_mask"][:,:max_len_out].contiguous()
         return inputs
@@ -92,6 +97,10 @@ class T5Model(pl.LightningModule):
         labels = batch["output_seq"]["input_ids"]
         logits = outputs.logits
         loss = outputs.loss
+
+        #print(self.tokenizer.decode(batch["input_seq"]["input_ids"][0]))
+        #print(self.tokenizer.decode(batch["output_seq"]["input_ids"][0]))
+        #print(self.tokenizer.decode(logits.argmax(dim=2)[0]))
 
         acc = self.compute_acc(logits, labels)
 

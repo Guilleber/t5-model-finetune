@@ -43,7 +43,7 @@ if __name__ == "__main__":
             inputs = {key: inputs[key].to(device) for key in inputs}
 
             output = model.generate(**inputs)[0]
-            output_text = tokenizer.decode(output)
+            output_text = tokenizer.decode(output, skip_special_tokens=True)
             f.write("{}\t{}\n".format(input_text, output_text))
         f.close()
 

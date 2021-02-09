@@ -137,6 +137,8 @@ def seq2seq_preprocess(tokenizer, hparams, x: List) -> Dict:
     features["output_seq"] = tokenizer(x[1], padding='max_length', max_length=hparams.max_len_out, truncation=True, add_special_tokens=True, return_tensors='pt')
     features["input_seq"] = {key: features["input_seq"][key].squeeze(0) for key in features["input_seq"]}
     features["output_seq"] = {key: features["output_seq"][key].squeeze(0) for key in features["output_seq"]}
+    features["input_seq_text"] = x[0]
+    features["output_seq_text"] = x[1]
     return features
 
 
