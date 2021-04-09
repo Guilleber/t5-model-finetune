@@ -35,6 +35,30 @@ configs = {
                   "max_len_in": 256,
                   "max_len_out": 50
               },
+              "unifiedqa-large-lr1": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "allenai/unifiedqa-t5-large",
+                  "lr": 1e-5,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
+              },
+              "unifiedqa-large-lr2": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "allenai/unifiedqa-t5-large",
+                  "lr": 5e-5,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
+              },
+              "unifiedqa-large-lr3": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "allenai/unifiedqa-t5-large",
+                  "lr": 5e-6,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
+              },
               "t5-base": {
                   "pretrained_model_type": "t5",
                   "pretrained_model_name": "t5-base",
