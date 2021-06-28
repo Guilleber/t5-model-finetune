@@ -9,6 +9,9 @@ import pytorch_lightning as pl
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import Adafactor, AdamW
 
+from datetime import datetime
+import sys
+
 
 class T5Model(pl.LightningModule):
     def __init__(self, args):
@@ -17,6 +20,7 @@ class T5Model(pl.LightningModule):
         
         self.model = AutoModelForSeq2SeqLM.from_pretrained(self.hpar.pretrained_model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(self.hpar.pretrained_model_name)
+        return
         
 
     def forward(self, inputs):
@@ -89,6 +93,10 @@ class T5Model(pl.LightningModule):
 
         return loss
 
+    def training_epoch_end(self, outputs):
+        print("epoch end time = {}".format(datetime.now().strftime("%d/%m/%Y %H:%M")), file=sys.stderr)
+        return
+
     def validation_step(self, batch, batch_idx):
         batch = self.trim_padding(batch)
 
@@ -97,10 +105,6 @@ class T5Model(pl.LightningModule):
         labels = batch["output_seq"]["input_ids"]
         logits = outputs.logits
         loss = outputs.loss
-
-        #print(self.tokenizer.decode(batch["input_seq"]["input_ids"][0]))
-        #print(self.tokenizer.decode(batch["output_seq"]["input_ids"][0]))
-        #print(self.tokenizer.decode(logits.argmax(dim=2)[0]))
 
         acc = self.compute_acc(logits, labels)
 

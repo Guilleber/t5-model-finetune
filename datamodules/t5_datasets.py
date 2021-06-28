@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from functools import partial
 import os
 
@@ -6,6 +6,8 @@ import pytorch_lightning as pl
 from transformers import AutoTokenizer
 from torch.utils.data import ConcatDataset, Dataset, DataLoader
 
+
+path_to_datasets = "../../unifiedqa_datasets/"
 
 complete_dataset_list = [
         "ai2_science_elementary",
@@ -94,7 +96,7 @@ class T5DataModule(pl.LightningDataModule):
         self.preprocessor = partial(seq2seq_preprocess, self.tokenizer, self.hpar)
 
     def prepare_data(self):
-        path_to_data="../../unifiedqa_datasets/{}/{}.tsv"
+        path_to_data=path_to_datasets + "{}/{}.tsv"
         train_datasets = []
         val_datasets = []
         test_datasets = []
@@ -131,7 +133,7 @@ class T5DataModule(pl.LightningDataModule):
         return DataLoader(self.test, batch_size=self.hpar.batch_size)
 
 
-def seq2seq_preprocess(tokenizer, hparams, x: List) -> Dict:
+def seq2seq_preprocess(tokenizer, hparams, x: List[Tuple[str]]) -> Dict:
     features = dict()
     features["input_seq"] = tokenizer(x[0], padding='max_length', max_length=hparams.max_len_in, truncation=True, add_special_tokens=True, return_tensors='pt')
     features["output_seq"] = tokenizer(x[1], padding='max_length', max_length=hparams.max_len_out, truncation=True, add_special_tokens=True, return_tensors='pt')
