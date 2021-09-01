@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple
 from functools import partial
 import os
+from typing import Optional
 
 import pytorch_lightning as pl
 from transformers import AutoTokenizer
@@ -95,7 +96,7 @@ class T5DataModule(pl.LightningDataModule):
         self.tokenizer = AutoTokenizer.from_pretrained(self.hpar.pretrained_model_name)
         self.preprocessor = partial(seq2seq_preprocess, self.tokenizer, self.hpar)
 
-    def prepare_data(self):
+    def setup(self, stage: Optional[str] = None):
         path_to_data=path_to_datasets + "{}/{}.tsv"
         train_datasets = []
         val_datasets = []

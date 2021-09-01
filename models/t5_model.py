@@ -32,22 +32,20 @@ class T5Model(pl.LightningModule):
 
     def trim_padding(self, inputs):
         max_len_in = -1
-        for seq in inputs["input_seq"]["input_ids"]:
+        for seq in inputs["input_seq"]["attention_mask"]:
             for t in range(1, len(seq)):
-                if seq[t] == 0:
-                    max_len_in = max(t, max_len_in)
-                    break
+                if seq[t] == 1:
+                    max_len_in = max(t+1, max_len_in)
         if max_len_in == -1:
             max_len_in = inputs["input_seq"]["input_ids"].size(1)
         inputs["input_seq"]["input_ids"] = inputs["input_seq"]["input_ids"][:,:max_len_in].contiguous()
         inputs["input_seq"]["attention_mask"] = inputs["input_seq"]["attention_mask"][:,:max_len_in].contiguous()
 
-        max_len_out = 0
-        for seq in inputs["output_seq"]["input_ids"]:
+        max_len_out = -1
+        for seq in inputs["output_seq"]["attention_mask"]:
             for t in range(1, len(seq)):
-                if seq[t] == 0:
-                    max_len_out = max(t, max_len_out)
-                    break
+                if seq[t] == 1:
+                    max_len_out = max(t+1, max_len_out)
         if max_len_out == -1:
             max_len_out = inputs["output_seq"]["input_ids"].size(1)
         inputs["output_seq"]["input_ids"] = inputs["output_seq"]["input_ids"][:,:max_len_out].contiguous()
@@ -88,8 +86,8 @@ class T5Model(pl.LightningModule):
 
         acc = self.compute_acc(logits, labels)
 
-        self.log("train_loss", loss)
-        self.log("train_word_acc", acc)
+        self.log("train_loss", loss, sync_dist=True)
+        self.log("train_acc", acc, sync_dist=True)
 
         return loss
 
@@ -108,18 +106,18 @@ class T5Model(pl.LightningModule):
 
         acc = self.compute_acc(logits, labels)
 
-        return {"val_loss": loss, "val_word_acc": acc}
+        return {"val_loss": loss, "val_acc": acc}
 
     def validation_epoch_end(self, outputs):
         mean_loss = torch.stack([it["val_loss"] for it in outputs]).mean()
-        mean_acc = torch.stack([it["val_word_acc"] for it in outputs]).mean()
+        mean_acc = torch.stack([it["val_acc"] for it in outputs]).mean()
 
         print("*** VALIDATION ***")
         print("val_loss: " + str(mean_loss))
-        print("val_word_acc: " + str(mean_acc))
+        print("val_acc: " + str(mean_acc))
 
         self.log("val_loss", mean_loss)
-        self.log("val_word_acc", mean_acc)
+        self.log("val_acc", mean_acc)
 
     def test_step(self, batch, batch_idx):
         batch = self.trim_padding(batch)
@@ -132,8 +130,8 @@ class T5Model(pl.LightningModule):
 
         acc = self.compute_acc(logits, labels)
 
-        return {"test_loss": loss, "test_word_acc": acc}
+        return {"test_loss": loss, "test_acc": acc}
 
     def test_epoch_end(self, outputs):
         self.log("test_loss", torch.stack([it["test_loss"] for it in outputs]).mean())
-        self.log("test_word_acc", torch.stack([it["test_word_acc"] for it in outputs]).mean())
+        self.log("test_acc", torch.stack([it["test_acc"] for it in outputs]).mean())

@@ -31,7 +31,7 @@ then
     then
         python3 generate.py $input_tsv $output_tsv --model-type $model_type
     else
-        python3 generate.py $input_tsv $output_tsv --model-type $model_type --checkpoint "../stored_models/$checkpoint_name.ckpt"
+        python3 generate.py $input_tsv $output_tsv --model-type $model_type --checkpoint "../saved_models/$checkpoint_name.ckpt"
     fi
 else
     echo "***Reusing file $output_tsv"

@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     hparams = get_config_by_name(args.model_name)
+    hparams.lr = args.gpus * hparams.lr
 
     pl.seed_everything(42)
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
     if args.save_best_model:
         checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor='val_acc',
                                              dirpath='./saved_models/',
-                                             filename=args.exp_name + '-{epoch:02d}-{val_acc:2.2f}',
+                                             filename=args.exp_name,
                                              save_top_k=1,
                                              verbose=True,
                                              mode='max')
@@ -67,7 +68,7 @@ if __name__ == "__main__":
 
     trainer = pl.Trainer(gpus=args.gpus,
                          accelerator='ddp',
-                         plugins=[DDPPlugin(find_unused_parameters=False)],
+                         plugins=[DDPPlugin(find_unused_parameters=False), 'ddp_sharded'],
                          checkpoint_callback=args.save_best_model,
                          callbacks=callbacks,
                          gradient_clip_val=2.,
