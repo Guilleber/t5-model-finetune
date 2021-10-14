@@ -97,6 +97,7 @@ class T5Model(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         batch = self.trim_padding(batch)
+        print(batch)
 
         outputs = self(batch)
 

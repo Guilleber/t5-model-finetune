@@ -44,7 +44,7 @@ if __name__ == "__main__":
     data_module = T5DataModule(dataset_list, hparams)
 
     if args.load_model_from is not None:
-        model = T5Model.load_from_checkpoint(args.load_model_from, hparams)
+        model = T5Model.load_from_checkpoint(checkpoint_path=args.load_model_from, args=hparams)
     else:
         model = T5Model(hparams)
 

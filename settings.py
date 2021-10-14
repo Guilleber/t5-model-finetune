@@ -40,8 +40,8 @@ configs = {
                   "pretrained_model_name": "allenai/unifiedqa-t5-large",
                   "lr": 1e-5,
                   "batch_size": 4,
-                  "max_len_in": 50,
-                  "max_len_out": 10
+                  "max_len_in": 64,
+                  "max_len_out": 16
               },
               "unifiedqa-large-lr2": {
                   "pretrained_model_type": "t5",

@@ -18,7 +18,7 @@ EOF
 convert() {
 if [ ! -e $input_tsv ] || [ $force_rebuild == 1 ]
 then
-    python3 obqa2seq.py $obqa_file $input_tsv
+    /usr/bin/python3 obqa2seq.py $obqa_file $input_tsv
 else
     echo "***Reusing file $input_tsv"
 fi
@@ -29,9 +29,9 @@ if [ ! -e $output_tsv ] || [ $force_rebuild == 1 ]
 then
     if [ -z $checkpoint_name ]
     then
-        python3 generate.py $input_tsv $output_tsv --model-type $model_type
+        /usr/bin/python3 generate.py $input_tsv $output_tsv --model-type $model_type
     else
-        python3 generate.py $input_tsv $output_tsv --model-type $model_type --checkpoint "../saved_models/$checkpoint_name.ckpt"
+        /usr/bin/python3 generate.py $input_tsv $output_tsv --model-type $model_type --checkpoint "../saved_models/$checkpoint_name.ckpt"
     fi
 else
     echo "***Reusing file $output_tsv"
@@ -41,14 +41,14 @@ fi
 prediction() {
 if [ ! -e $pred_file ] || [ $force_rebuild == 1 ]
 then
-    python3 compute_pred.py $output_tsv $obqa_file $pred_file --model-type $model_type
+    /usr/bin/python3 compute_pred.py $output_tsv $obqa_file $pred_file --model-type $model_type
 else
     echo "***Reusing file $pred_file"
 fi
 }
 
 accuracy() {
-python3 compute_acc.py $obqa_file $pred_file
+/usr/bin/python3 compute_acc.py $obqa_file $pred_file
 }
 
 
