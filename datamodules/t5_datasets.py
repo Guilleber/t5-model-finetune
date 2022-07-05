@@ -93,7 +93,7 @@ class T5DataModule(pl.LightningDataModule):
         super().__init__()
         self.hpar = hpar
         self.dataset_names = dataset_list
-        self.tokenizer = AutoTokenizer.from_pretrained(self.hpar.pretrained_model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained("allenai/unifiedqa-t5-large")
         self.preprocessor = partial(seq2seq_preprocess, self.tokenizer, self.hpar)
 
     def setup(self, stage: Optional[str] = None):
@@ -102,20 +102,29 @@ class T5DataModule(pl.LightningDataModule):
         val_datasets = []
         test_datasets = []
         for dataset in self.dataset_names:
-            path_train = path_to_data.format(dataset, "train")
+            no_dev = False
+            if dataset[0] == '!':
+                dataset = dataset[1:]
+                no_dev = True
+            if ':' in dataset:
+                prop, dataset = dataset.split(':')
+                prop = int(prop)/100
+            else:
+                prop = 1.0
+            path_train = path_to_data.format(dataset, "train_full" if no_dev else "train")
             path_val = path_to_data.format(dataset, "dev")
             path_test = path_to_data.format(dataset, "test")
             if os.path.exists(path_train):
-                train_datasets.append(TsvDataset(path_train, self.preprocessor))
+                train_datasets.append(TsvDataset(path_train, self.preprocessor, prop))
             else:
                 print("Warning: No train file found for dataset '{}'".format(dataset))
 
-            if os.path.exists(path_val):
+            if os.path.exists(path_val) and not no_dev:
                 val_datasets.append(TsvDataset(path_val, self.preprocessor))
             else:
                 print("Warning: No validation file found for dataset '{}'".format(dataset))
 
-            if os.path.exists(path_test):
+            if os.path.exists(path_test) and not no_dev:
                 test_datasets.append(TsvDataset(path_test, self.preprocessor))
             else:
                 print("Warning: No test file found for dataset '{}'".format(dataset))
@@ -146,13 +155,15 @@ def seq2seq_preprocess(tokenizer, hparams, x: List[Tuple[str]]) -> Dict:
 
 
 class TsvDataset(Dataset):
-    def __init__(self, path: str, map_func=None) -> None:
+    def __init__(self, path: str, map_func=None, prop=1.0) -> None:
         super().__init__()
         self.samples = [line.split('\t') for line in open(path, 'r').readlines()]
         self.map_func = map_func
+        self.length = int(len(self.samples)*prop)
+
 
     def __len__(self):
-        return len(self.samples)
+        return self.length
 
     def __getitem__(self, idx: int) -> Dict:
         if self.map_func is None:

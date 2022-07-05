@@ -1,5 +1,5 @@
 import argparse
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, T5Tokenizer
 from tqdm import tqdm
 
 import sys
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     hparams = get_config_by_name(args.model_type)
 
-    tokenizer = AutoTokenizer.from_pretrained(hparams.pretrained_model_name)
+    #tokenizer = AutoTokenizer.from_pretrained(hparams.pretrained_model_name)
+    tokenizer = AutoTokenizer.from_pretrained('allenai/unifiedqa-t5-large')
     
     if args.checkpoint is not None:
         model = T5Model.load_from_checkpoint(args.checkpoint, args=hparams)

@@ -19,7 +19,7 @@ class T5Model(pl.LightningModule):
         self.hpar = args
         
         self.model = AutoModelForSeq2SeqLM.from_pretrained(self.hpar.pretrained_model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(self.hpar.pretrained_model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained('allenai/unifiedqa-t5-large')
         return
         
 

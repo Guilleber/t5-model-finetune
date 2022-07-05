@@ -43,6 +43,22 @@ configs = {
                   "max_len_in": 64,
                   "max_len_out": 16
               },
+              "unifiedqa-v2-large": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "allenai/unifiedqa-v2-t5-large-1363200",
+                  "lr": 1e-5,
+                  "batch_size": 4,
+                  "max_len_in": 64,
+                  "max_len_out": 16
+              },
+              "unifiedqa-v2-large-test": {
+                  "pretrained_model_type": "t5",
+                  "pretrained_model_name": "allenai/unifiedqa-v2-t5-large-1363200",
+                  "lr": 1e-5,
+                  "batch_size": 4,
+                  "max_len_in": 256,
+                  "max_len_out": 50
+              },
               "unifiedqa-large-lr2": {
                   "pretrained_model_type": "t5",
                   "pretrained_model_name": "allenai/unifiedqa-t5-large",

@@ -24,7 +24,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     hparams = get_config_by_name(args.model_type)
 
-    tokenizer = AutoTokenizer.from_pretrained(hparams.pretrained_model_name)
+    tokenizer = AutoTokenizer.from_pretrained('allenai/unifiedqa-t5-large')
 
     print("***Computing predictions for {} with reference {}...".format(args.tsv_file, args.mcqa_file))
     print("***Writing to {}...".format(args.pred_file))
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         tsv = open(args.tsv_file, 'r')
         for mcqa_line in jsonlines.open(args.mcqa_file, 'r'):
             tsv_line = tsv.readline()
-            generated_tokens = tokenizer.tokenize(tsv_line.split('\t')[1].lower())
+            generated_tokens = tokenizer.tokenize(tsv_line.split('\t')[1].lower().strip())
             choices_tokens = [tokenizer.tokenize(ch["text"].lower()) for ch in mcqa_line["question"]["choices"]]
 
             choices_similarity = [similarity(generated_tokens, ch) for ch in choices_tokens]
