@@ -1,12 +1,12 @@
 #./t5_eval.sh -f -d qasc -t unifiedqa-large -- ../../../unifiedqa_datasets/qasc/dev.jsonl
 #./t5_eval.sh -f -d qasc -t unifiedqa-large -m unifiedqa-large_dataaugment_qasc -- ../../../unifiedqa_datasets/qasc/dev.jsonl
 #./t5_eval.sh -f -d csqa -t unifiedqa-large -m unifiedqa-large_dataaugment_csqa -- ../../../unifiedqa_datasets/commonsenseqa/dev.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_1 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_2 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_3 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_1 -- ../../../unifiedqa_datasets/sciq/test.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_2 -- ../../../unifiedqa_datasets/sciq/test.jsonl
-./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_es_wiki_3 -- ../../../unifiedqa_datasets/sciq/test.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_1 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_2 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_3 -- ../../../unifiedqa_datasets/sciq/dev.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_1 -- ../../../unifiedqa_datasets/sciq/test.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_2 -- ../../../unifiedqa_datasets/sciq/test.jsonl
+./t5_eval.sh -f -d sciq -t unifiedqa-v2-large-test -m unifiedqa-v2-large_s_sciq_3 -- ../../../unifiedqa_datasets/sciq/test.jsonl
 #./t5_eval.sh -f -d qasc -t unifiedqa-v2-large -m unifiedqa-v2-large_s_sciq_1 -- ../../../unifiedqa_datasets/qasc/dev.jsonl
 #./t5_eval.sh -f -d qasc -t unifiedqa-v2-large -m unifiedqa-v2-large_s_sciq_2 -- ../../../unifiedqa_datasets/qasc/dev.jsonl
 #./t5_eval.sh -f -d qasc -t unifiedqa-v2-large -m unifiedqa-v2-large_s_sciq_3 -- ../../../unifiedqa_datasets/qasc/dev.jsonl
